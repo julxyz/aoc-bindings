@@ -91,7 +91,7 @@ func (h *AoCHelper) getFileName() string {
 	return fmt.Sprintf("%d%20d.txt", h.Year, h.Day)
 }
 
-// GetInput retrieves the puzzle input for a certain day as a []string.
+// GetInput retrieves the puzzle input as a []string.
 //
 // Also caches the input, use force=true to force overwrite the cache. Please use caching to avoid unnecessary to the AoC servers
 func (h *AoCHelper) GetInput(force bool) []string {
@@ -102,7 +102,11 @@ func (h *AoCHelper) GetInput(force bool) []string {
 	return h.readCached()
 }
 
+// Submits the solution to the AoC website if it hasn't been already solved.
 func (h *AoCHelper) Submit(part int, solution int) bool {
+	if h.puzzleStatus >= part {
+		return true
+	}
 	body := []byte(fmt.Sprintf("level=%d&answer=%d", part, solution))
 	req, err := http.NewRequest("POST", fmt.Sprintf("https://adventofcode.com/%d/day/%d/answer", h.Year, h.Day), bytes.NewBuffer(body))
 	checkErr(err)
