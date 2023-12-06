@@ -29,7 +29,14 @@ func NewAoCHelper() AoCHelper {
 	if tmpdir == "" {
 		tmpdir = "/tmp"
 	}
-	return AoCHelper{getCookie(), &http.Client{}, filepath.Join(tmpdir, "aoc_cache")}
+	// create cache folder
+	dir := filepath.Join(tmpdir, "aoc_cache")
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		if err := os.Mkdir(dir, os.ModePerm); err != nil {
+			log.Fatal(err)
+		}
+	}
+	return AoCHelper{getCookie(), &http.Client{}, dir}
 }
 
 // getCookie returns the session cookie if available
